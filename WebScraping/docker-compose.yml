@@ -1,0 +1,8 @@
+version: '3.7'
+
+services:
+  webscraping:
+    image: ${DOCKER_REGISTRY-}webscraping
+    build:
+      context: .
+      dockerfile: WebScraping\Dockerfile
