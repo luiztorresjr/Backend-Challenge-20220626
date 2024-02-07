@@ -16,7 +16,7 @@ namespace WebScraping.Infra.Models
         public string? Id { get; set; } = null;
 
         [BsonElement("code")]
-        public double Code { get; set; }
+        public long Code { get; set; }
 
         [BsonElement("barcode")]
         public string Barcode { get; set; } = String.Empty;
