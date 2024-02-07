@@ -1,5 +1,6 @@
 
 using WebScraping.Infra.Models;
+using WebScraping.Infra.Scraping;
 using WebScraping.Infra.Services;
 using WebScraping.Services;
 
@@ -20,6 +21,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IMongoDBService, MongoDBService>();
+builder.Services.AddScoped<IWebScrapingService, WebScrapingService>();
 
 var app = builder.Build();
 
@@ -28,6 +30,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    builder.Services.Configure<MongoDBSetttings>(builder.Configuration.GetSection("MongoDB"));
 }
 
 app.UseHttpsRedirection();

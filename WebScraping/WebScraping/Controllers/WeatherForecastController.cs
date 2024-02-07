@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using WebScraping.Infra.Models;
+using WebScraping.Infra.Scraping;
 
 namespace WebScraping.Controllers
 {
@@ -29,5 +31,7 @@ namespace WebScraping.Controllers
             })
             .ToArray();
         }
+
+        
     }
 }

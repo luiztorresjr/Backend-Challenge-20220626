@@ -9,6 +9,7 @@ namespace WebScraping.Helpers
         public ProductProfile()
         {
             CreateMap<ProductMongo, Product>().ReverseMap();
+            CreateMap<ProductScraping, Product>().ReverseMap();
         }
     }
 }

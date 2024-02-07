@@ -8,8 +8,8 @@ namespace WebScraping.Services
 {
     public class ProductService : IProductService
     {
-        private IMapper _mapper;
-        private IMongoDBService _service;
+        private readonly IMapper _mapper;
+        private readonly IMongoDBService _service;
 
         public ProductService(IMapper mapper, IMongoDBService service)
         {

@@ -5,10 +5,9 @@ namespace WebScraping.Model
     public class Product
     {
         public string? Id { get; set; }
-        public double Code { get; set; }
-                
+        public double Code { get; set; }                
         public string Barcode { get; set; } = String.Empty;
-        public string Status { get; set; } = String.Empty;
+        public EStatus Status { get; set; } = EStatus.draft;
         public DateTime Imported { get; set; }
         public string Url { get; set; } = String.Empty;
         public string ProductName { get; set; } = String.Empty;     
