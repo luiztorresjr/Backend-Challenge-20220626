@@ -10,3 +10,5 @@
 /WebScraping/obj/Docker
 /WebScraping/WebScraping.Infra/bin/Debug/net8.0
 /WebScraping/WebScraping.Infra/obj
+/WebScraping/bin/Debug
+/WebScraping/obj/Debug
