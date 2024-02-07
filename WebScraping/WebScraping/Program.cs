@@ -22,6 +22,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IMongoDBService, MongoDBService>();
 builder.Services.AddScoped<IWebScrapingService, WebScrapingService>();
+builder.Services.AddScoped<IScrapingService, ScrapingService>();
 
 var app = builder.Build();
 

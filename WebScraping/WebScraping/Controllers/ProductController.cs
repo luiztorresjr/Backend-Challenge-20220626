@@ -9,10 +9,12 @@ namespace WebScraping.Controllers
     public class ProductController : Controller
     {
         private IProductService _service;
+        private IScrapingService _scrapingService;
 
-        public ProductController(IProductService service)
+        public ProductController(IProductService service, IScrapingService scrapingService)
         {
             _service = service;
+            _scrapingService = scrapingService;
         }
 
         [HttpPost]
@@ -55,6 +57,16 @@ namespace WebScraping.Controllers
         {
             await _service.DeleteProduct(id);
             return NoContent();
+        }
+
+        [HttpGet("GetByWebScraping")]
+        public async Task<IActionResult> GetProductsByScraping()
+        {
+            var products = await _scrapingService.GetProductsAsync();
+            if (products != null)
+                return Ok(products);
+            else
+                return NoContent();
         }
     }
 }
