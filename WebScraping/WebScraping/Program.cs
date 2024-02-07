@@ -30,7 +30,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    builder.Services.Configure<MongoDBSetttings>(builder.Configuration.GetSection("MongoDB"));
 }
 
 app.UseHttpsRedirection();
