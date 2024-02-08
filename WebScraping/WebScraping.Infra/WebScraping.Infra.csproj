@@ -12,6 +12,7 @@
 
   <ItemGroup>
 	  <PackageReference Include="HtmlAgilityPack" Version="1.11.58" />
+	  <PackageReference Include="HtmlAgilityPack.CssSelectors" Version="1.0.2" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.15" />
 	  <PackageReference Include="MongoDB.Bson" Version="2.23.1" />
 	  <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
