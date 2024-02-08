@@ -3,7 +3,7 @@
 Este é um desafio para back-end, para testar conhecimentos na criação de API utilizando .NET/C# 
 que tem como objeto ler informações de produtos, além de obter informações do site
 [https://world.openfoodfacts.org/], através web scraping, utilizando o HtmlAgilityPack, que irá rodar automaticamente á meia noite todo dia obtendo 100 itens.
-
+[ttps://lab.coodesh.com/luiztrjunior/challenge-20220626]
 #Tecnologias utilizadas
 - .NET 
 - Quartz
