@@ -10,7 +10,7 @@ namespace WebScraping.Infra.Scraping
     {
         const string baseUrl = "https://world.openfoodfacts.org";
         private IMongoDBService _mongoDBService;
-        private readonly ILogger<WebScrapingService> _logger;    
+        private readonly ILogger<WebScrapingService> _logger;
 
         public WebScrapingService(IMongoDBService mongoDBService, ILogger<WebScrapingService> logger)
         {
@@ -20,30 +20,27 @@ namespace WebScraping.Infra.Scraping
 
         public async Task<List<ProductMongo>> GetProductUsingScraping()
         {
+            
             List<ProductMongo> products = new List<ProductMongo>();
             List<String> hrefTags = new List<String>();
             var web = new HtmlWeb();
             HtmlDocument document = web.Load(baseUrl);
-            
+
             // Select the product nodes
             var pagination = document.DocumentNode.SelectNodes("//ul[@class='pagination']//a[@href]");
             Console.WriteLine(pagination.Count);
             int pages = int.Parse(pagination[pagination.Count - 3].InnerText);
-                for (int i = 1; i <= pages; i++)
+            for (int i = 1; i <= pages; i++)
+            {
+                document = web.Load(baseUrl + ($"/{i}"));
+                foreach (HtmlNode link in document.DocumentNode.SelectNodes("//a[@href]"))
                 {
-                    document = web.Load(baseUrl + ($"/{i}"));
-                    foreach (HtmlNode link in document.DocumentNode.SelectNodes("//a[@href]"))
+                    HtmlAttribute att = link.Attributes["href"];
+                    if (att.Value.Contains("/product/"))
                     {
-                        HtmlAttribute att = link.Attributes["href"];
-                        if (att.Value.Contains("/product/"))
-                        {
-                            var product = new ProductMongo(GetProduct((baseUrl + att.Value), att.Value));
-                            
-                            if (await _mongoDBService.GetProductByCodeExistsAsync(product.Code))
-                            {
-                                hrefTags.Remove(att.Value);
-                        }
-                        else
+                        var product = new ProductMongo(GetProduct((baseUrl + att.Value), att.Value));
+
+                        if (!await _mongoDBService.GetProductByCodeExistsAsync(product.Code))
                         {
                             hrefTags.Add(att.Value);
                             products.Add(product);
@@ -54,18 +51,18 @@ namespace WebScraping.Infra.Scraping
                             catch (Exception ex)
                             {
                                 Console.WriteLine(ex.ToString());
-                                _logger.LogError(WebScrapingService.ReferenceEquals + ex.ToString());
+                                _logger.LogError(ex.ToString());
                             }
                         }
-                            if (hrefTags.Count == 100)
-                            {
-                            _logger.LogInformation("Ultimo passado "+product);
+                        if (hrefTags.Count == 100)
+                        {
+                            _logger.LogInformation("Ultimo passado " + product);
                             return products;
-                            }
                         }
-
                     }
+
                 }
+            }
 
             _logger.LogInformation("Lista finalizada");
             return products;

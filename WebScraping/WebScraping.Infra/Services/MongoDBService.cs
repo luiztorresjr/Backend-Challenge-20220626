@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -59,8 +60,21 @@ namespace WebScraping.Infra.Services
 
         public async Task<ProductMongo> GetProductById(string id)
         {
-            FilterDefinition<ProductMongo> filter = Builders<ProductMongo>.Filter.Eq("Id", id);
-            return await _products.Find(filter).FirstAsync<ProductMongo>();
+            var products = await _products.Find(new BsonDocument()).ToListAsync<ProductMongo>();
+            try
+            {
+                var product = products.FirstOrDefault(i => i.Id == id);
+                if (product != null && product.Id == id)
+                {
+                    return product;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                throw;
+                return null;
+            }
         }
 
         public async Task<ProductMongo>? GetProductByCode(long Code)

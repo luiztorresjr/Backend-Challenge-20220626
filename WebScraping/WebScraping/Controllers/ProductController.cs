@@ -18,15 +18,14 @@ namespace WebScraping.Controllers
             _scrapingService = scrapingService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddProduct([FromBody] Product product)
+        [HttpGet]
+        public IActionResult Get()
         {
-            await _service.AddProduct(product);
-            return CreatedAtAction(nameof(GetProducts), new { id = product.Id }, product);
 
+            return Ok("Fullstack Challenge 20201026");
         }
 
-        [HttpGet("Products")]
+        [HttpGet("products")]
         public async Task<IActionResult> GetProducts(int page = 1, int pageSize = 10)
         {
             var products = await _service.GetAllProducts();
@@ -48,12 +47,22 @@ namespace WebScraping.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(string id)
         {
+            try
+            {
             var products = await _service.GetProductById(id);
-            if (products != null)
+            if (products.Id != null)
                 return Ok(products);
             else
-                return NoContent();
+                return NotContent();
+
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+                throw;
+            }
         }
+
+#if DEBUG
 
         [HttpPut("{id}")]
         public IActionResult UpdateProduct(string id, [FromBody] Product product)
@@ -87,11 +96,14 @@ namespace WebScraping.Controllers
             else
                 return NoContent();
         }
-        [HttpGet]
-        public IActionResult Get()
-        {
 
-            return Ok("Fullstack Challenge 20201026");
+        [HttpPost]
+        public async Task<IActionResult> AddProduct([FromBody] Product product)
+        {
+            await _service.AddProduct(product);
+            return CreatedAtAction(nameof(GetProducts), new { id = product.Id }, product);
+
         }
+#endif
     }
 }
