@@ -53,7 +53,7 @@ namespace WebScraping.Controllers
             if (products.Id != null)
                 return Ok(products);
             else
-                return NotContent();
+                return NoContent();
 
             }catch (Exception ex)
             {
