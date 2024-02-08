@@ -18,5 +18,10 @@ namespace WebScraping.Infra.Services
         Task UpdateProduct(string id, ProductMongo product);
 
         Task DeleteProduct(string id);
+
+        Task AddOrUpdateMany(List<ProductMongo> products);
+
+        Task<ProductMongo> GetProductByCode(long code);
+        Task<bool> GetProductByCodeExistsAsync(long code);
     }
 }

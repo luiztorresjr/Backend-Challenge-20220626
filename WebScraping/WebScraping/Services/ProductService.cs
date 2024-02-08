@@ -19,12 +19,12 @@ namespace WebScraping.Services
 
         public async Task<Product?> AddProduct(Product produto)
         {
-           var request = _mapper.Map<ProductMongo>(produto);
-            try{
+            var request = _mapper.Map<ProductMongo>(produto);
+            try {
                 await _service.AddOneProduct(request);
                 return produto;
-            
-            }catch(Exception ex)
+
+            } catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
                 return null;
@@ -38,18 +38,18 @@ namespace WebScraping.Services
 
         public async Task<List<Product>> GetAllProducts()
         {
-                var response = await _service.GetAllProducts();
-                var responseApi = new List<Product>();
-                if(response != null)
-                    responseApi = _mapper.Map<List<Product>>(response);
-                return responseApi;
+            var response = await _service.GetAllProducts();
+            var responseApi = new List<Product>();
+            if (response != null)
+                responseApi = _mapper.Map<List<Product>>(response);
+            return responseApi;
         }
 
         public async Task<Product> GetProductById(string id)
         {
             var response = await _service.GetProductById(id);
             var responseApi = new Product();
-            if(response != null)
+            if (response != null)
                 responseApi = _mapper.Map<Product>(response);
             return responseApi;
         }

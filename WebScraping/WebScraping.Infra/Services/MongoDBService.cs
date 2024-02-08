@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using HtmlAgilityPack;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using WebScraping.Infra.Models;
@@ -8,6 +9,7 @@ namespace WebScraping.Infra.Services
     public class MongoDBService : IMongoDBService
     {
         private readonly IMongoCollection<ProductMongo> _products;
+        private readonly IMongoCollection<HtmlDocument> _pagina;
 
         public MongoDBService(IOptions<MongoDBSetttings> settings)
         {
@@ -61,5 +63,80 @@ namespace WebScraping.Infra.Services
             FilterDefinition<ProductMongo> filter = Builders<ProductMongo>.Filter.Eq("Id", id);
             return await _products.Find(filter).FirstAsync<ProductMongo>();
         }
+
+        public async Task<ProductMongo>? GetProductByCode(long Code)
+        {
+            FilterDefinition<ProductMongo> filter = Builders<ProductMongo>
+                .Filter.Eq("Code", Code);
+            return await _products.Find(filter).FirstAsync<ProductMongo>();
+        }
+
+        public async Task AddOrUpdateMany(List<ProductMongo> products)
+        {
+            foreach (ProductMongo product in products)
+            {
+                var exists = GetProductByCode(product.Code).Result;
+                if (exists != null)
+                {
+                    FilterDefinition<ProductMongo> filter = Builders<ProductMongo>.Filter.Eq("Id", exists.Id);
+                    ProductMongo old = await _products.Find(filter).FirstAsync<ProductMongo>();
+
+                    UpdateDefinition<ProductMongo> update =
+                        Builders<ProductMongo>.Update
+                        .Set(product => product.Code, exists.Code < 1 ? old.Code : product.Code)
+                        .Set(product => product.Barcode, String.IsNullOrEmpty(product.Barcode) ? old.Barcode : product.Barcode)
+                        .Set(product => product.Status, String.IsNullOrEmpty(product.Status) ? old.Status : product.Status)
+                        .Set(product => product.Imported, product.Imported == DateTime.MinValue ? old.Imported : product.Imported)
+                        .Set(product => product.Url, String.IsNullOrEmpty(product.Url) ? old.Url : product.Url)
+                        .Set(product => product.ProductName, String.IsNullOrEmpty(product.ProductName) ? old.ProductName : product.ProductName)
+                        .Set(product => product.Quantity, String.IsNullOrEmpty(product.Quantity) ? old.Quantity : product.Quantity)
+                        .Set(product => product.Categories, String.IsNullOrEmpty(product.Categories) ? old.Categories : product.Categories)
+                        .Set(product => product.Packaging, String.IsNullOrEmpty(product.Packaging) ? old.Packaging : product.Packaging)
+                        .Set(product => product.Brands, String.IsNullOrEmpty(product.Brands) ? old.Brands : product.Brands)
+                        .Set(product => product.ImageUrl, String.IsNullOrEmpty(product.ImageUrl) ? old.ImageUrl : product.ImageUrl);
+                    await _products.UpdateOneAsync(filter, update);
+                }
+                else
+                {
+                   await _products.InsertOneAsync(product);
+                }
+            }
+            return;
+        }
+
+        public async Task AddOrUpdateMany(ProductMongo product)
+        {
+            var exists = GetProductByCode(product.Code).Result;
+            if (exists != null)
+            {
+                _ = UpdateProduct(exists.Id, product);
+            }
+            else
+            {
+                _ = AddOneProduct(product);
+            }
+
+            return;
+        }
+        public async Task<bool> GetProductByCodeExistsAsync(long Code)
+        {
+            var products = await _products.Find(new BsonDocument()).ToListAsync<ProductMongo>();
+            try
+            {
+                var product = products.FirstOrDefault(i => i.Code == Code);
+                if (product != null && product.Code == Code)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+        }
+
+        
     }
 }
