@@ -1,4 +1,5 @@
 
+using WebScraping.Infra.Cron;
 using WebScraping.Infra.Models;
 using WebScraping.Infra.Scraping;
 using WebScraping.Infra.Services;
@@ -10,12 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<MongoDBSetttings>(builder.Configuration.GetSection("MongoDB"));
 builder.Services.AddSingleton<MongoDBService>();
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddInfraestrutura();
 builder.Services.AddCors();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -24,7 +25,10 @@ builder.Services.AddScoped<IMongoDBService, MongoDBService>();
 builder.Services.AddScoped<IWebScrapingService, WebScrapingService>();
 builder.Services.AddScoped<IScrapingService, ScrapingService>();
 
+
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

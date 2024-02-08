@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
+using Microsoft.Extensions.Logging;
 using WebScraping.Infra.Models;
 using WebScraping.Infra.Services;
 
@@ -18,10 +10,12 @@ namespace WebScraping.Infra.Scraping
     {
         const string baseUrl = "https://world.openfoodfacts.org";
         private IMongoDBService _mongoDBService;
+        private readonly ILogger<WebScrapingService> _logger;    
 
-        public WebScrapingService(IMongoDBService mongoDBService)
+        public WebScrapingService(IMongoDBService mongoDBService, ILogger<WebScrapingService> logger)
         {
             _mongoDBService = mongoDBService;
+            _logger = logger;
         }
 
         public async Task<List<ProductMongo>> GetProductUsingScraping()
@@ -60,18 +54,20 @@ namespace WebScraping.Infra.Scraping
                             catch (Exception ex)
                             {
                                 Console.WriteLine(ex.ToString());
+                                _logger.LogError(WebScrapingService.ReferenceEquals + ex.ToString());
                             }
                         }
                             if (hrefTags.Count == 100)
                             {
+                            _logger.LogInformation("Ultimo passado "+product);
                             return products;
                             }
                         }
 
                     }
                 }
-            
 
+            _logger.LogInformation("Lista finalizada");
             return products;
         }
         public ProductScraping GetProduct(String url, string codigo)

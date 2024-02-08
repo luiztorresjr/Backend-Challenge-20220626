@@ -9,7 +9,6 @@ namespace WebScraping.Infra.Services
     public class MongoDBService : IMongoDBService
     {
         private readonly IMongoCollection<ProductMongo> _products;
-        private readonly IMongoCollection<HtmlDocument> _pagina;
 
         public MongoDBService(IOptions<MongoDBSetttings> settings)
         {

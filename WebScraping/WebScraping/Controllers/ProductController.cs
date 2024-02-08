@@ -23,7 +23,7 @@ namespace WebScraping.Controllers
         {
             await _service.AddProduct(product);
             return CreatedAtAction(nameof(GetProducts), new { id = product.Id }, product);
-            
+
         }
 
         [HttpGet("Products")]
@@ -70,11 +70,20 @@ namespace WebScraping.Controllers
         }
 
         [HttpGet("GetByWebScraping")]
-        public async Task<IActionResult> GetProductsByScraping()
+        public async Task<IActionResult> GetProductsByScraping(int page = 1, int pageSize = 10)
         {
             var products = await _scrapingService.GetProductsAsync();
             if (products != null)
-                return Ok(products);
+            {
+                var total = products.Count;
+                var totalPage = (int)Math.Ceiling((decimal)total / pageSize);
+                var producsPerPage = products
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+                return Ok(producsPerPage);
+
+            }
             else
                 return NoContent();
         }
