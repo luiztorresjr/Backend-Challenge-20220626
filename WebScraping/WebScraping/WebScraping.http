@@ -1,6 +1,6 @@
-@WebScraping_HostAddress = http://localhost:5262
+@WebScraping_HostAddress = http://localhost:8080
 
-GET {{WebScraping_HostAddress}}/weatherforecast/
+GET {{WebScraping_HostAddress}}/api/product/
 Accept: application/json
 
 ###

@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScraping", "WebScraping\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebScraping.Infra", "WebScraping.Infra\WebScraping.Infra.csproj", "{8DF3830E-3ACE-4B5D-A3D0-F6F08F5E918B}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{684671FD-C03B-4C39-9EBF-D9859C2BDAE6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{8DF3830E-3ACE-4B5D-A3D0-F6F08F5E918B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DF3830E-3ACE-4B5D-A3D0-F6F08F5E918B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DF3830E-3ACE-4B5D-A3D0-F6F08F5E918B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{684671FD-C03B-4C39-9EBF-D9859C2BDAE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{684671FD-C03B-4C39-9EBF-D9859C2BDAE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{684671FD-C03B-4C39-9EBF-D9859C2BDAE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{684671FD-C03B-4C39-9EBF-D9859C2BDAE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,4 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/.vs
+﻿/.vs
 /WebScraping/.vs
 /WebScraping/WebScraping/bin/Debug/net8.0
 /WebScraping/WebScraping/obj
@@ -12,3 +8,10 @@
 /WebScraping/WebScraping.Infra/obj
 /WebScraping/bin/Debug
 /WebScraping/obj/Debug
+/bin
+/WebScraping/WebScraping/obj
+/WebScraping/WebScraping/bin
+/WebScraping/WebScraping.Infra/1
+/WebScraping/WebScraping.Infra/bin
+/WebScraping/WebScraping/1
+/WebScraping/1

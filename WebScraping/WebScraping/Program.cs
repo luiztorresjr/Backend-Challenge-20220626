@@ -1,4 +1,6 @@
 
+using System.Net;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using WebScraping.Infra.Cron;
 using WebScraping.Infra.Models;
 using WebScraping.Infra.Scraping;
@@ -25,7 +27,12 @@ builder.Services.AddScoped<IMongoDBService, MongoDBService>();
 builder.Services.AddScoped<IWebScrapingService, WebScrapingService>();
 builder.Services.AddScoped<IScrapingService, ScrapingService>();
 
-
+builder.WebHost.ConfigureKestrel(opt=>{
+    opt.ConfigureHttpsDefaults(listenOptions =>
+    {
+        listenOptions.ClientCertificateMode = ClientCertificateMode.AllowCertificate;
+    });
+});
 
 var app = builder.Build();
 
@@ -37,7 +44,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

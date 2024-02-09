@@ -29,7 +29,7 @@ namespace WebScraping.Controllers
         public async Task<IActionResult> GetProducts(int page = 1, int pageSize = 10)
         {
             var products = await _service.GetAllProducts();
-            if (products != null)
+            if (products.Count() > 0 )
             {
                 var total = products.Count;
                 var totalPage = (int)Math.Ceiling((decimal)total / pageSize);
