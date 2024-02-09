@@ -31,7 +31,7 @@ namespace WebScraping.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return null;
+                return [];
             }
         }
     }
