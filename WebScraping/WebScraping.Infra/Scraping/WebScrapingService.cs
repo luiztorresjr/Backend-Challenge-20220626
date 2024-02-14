@@ -44,26 +44,35 @@ namespace WebScraping.Infra.Scraping
                         {
                             hrefTags.Add(att.Value);
                             products.Add(product);
+                           
+                        }
+                        if (hrefTags.Count == 100)
+                        {
+                            _logger.LogInformation("Ultimo passado " + product);
                             try
                             {
-                                await _mongoDBService.AddOneProduct(product);
+                                await _mongoDBService.AddMany(products);
                             }
                             catch (Exception ex)
                             {
                                 Console.WriteLine(ex.ToString());
                                 _logger.LogError(ex.ToString());
                             }
-                        }
-                        if (hrefTags.Count == 100)
-                        {
-                            _logger.LogInformation("Ultimo passado " + product);
                             return products;
                         }
                     }
 
                 }
             }
-
+            try
+            {
+                await _mongoDBService.AddMany(products);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                _logger.LogError(ex.ToString());
+            }
             _logger.LogInformation("Lista finalizada");
             return products;
         }

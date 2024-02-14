@@ -10,7 +10,7 @@ namespace WebScraping.Services
     {
         private readonly IMapper _mapper;
         private readonly IMongoDBService _service;
-
+        private static long lastCode = 0;
         public ProductService(IMapper mapper, IMongoDBService service)
         {
             _mapper = mapper;
@@ -36,9 +36,12 @@ namespace WebScraping.Services
             await _service.DeleteProduct(id);
         }
 
-        public async Task<List<Product>> GetAllProducts()
+        public async Task<List<Product>> GetAllProducts(int page, int pageSize)
         {
-            var response = await _service.GetAllProducts();
+            
+            var response = await _service.GetAllProducts(page, pageSize, lastCode);
+            lastCode = response.Last().Code;
+
             var responseApi = new List<Product>();
             if (response != null)
                 responseApi = _mapper.Map<List<Product>>(response);

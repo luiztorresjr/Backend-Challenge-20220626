@@ -11,7 +11,7 @@ namespace WebScraping.Infra.Services
     {
         Task AddOneProduct(ProductMongo product);
 
-        Task<List<ProductMongo>> GetAllProducts();
+        Task<List<ProductMongo>> GetAllProducts(int page, int pageSize, long code);
 
         Task<ProductMongo> GetProductById(string id);
 
@@ -19,7 +19,7 @@ namespace WebScraping.Infra.Services
 
         Task DeleteProduct(string id);
 
-        Task AddOrUpdateMany(List<ProductMongo> products);
+        Task AddMany(List<ProductMongo> products);
 
         Task<ProductMongo> GetProductByCode(long code);
         Task<bool> GetProductByCodeExistsAsync(long code);

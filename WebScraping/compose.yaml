@@ -12,14 +12,14 @@ services:
     container_name: webscraping
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_ENVIRONMENT_PORT=8080
+      - ASPNETCORE_HTTP_PORTS=8080
       - MONGODB__ConnectionURI=mongodb://admin:password@localhost:27017
       - MONGODB__DatabaseName=Challenge
       - MONGODB__CollectionName=Products
     build:
       context: .
       target: final
-      dockerfile: ./dockerfile
+      dockerfile: ./WebScraping/Dockerfile
     depends_on:
       - mongo
     restart: always
