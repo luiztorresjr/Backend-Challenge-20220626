@@ -73,7 +73,7 @@ namespace WebScraping.Controllers
         [HttpGet("GetByWebScraping")]
         public async Task<IActionResult> GetProductsByScraping(int page = 1, int pageSize = 10)
         {
-            var products = await _scrapingService.GetProductsAsync();
+            var products = await _scrapingService.GetProductsAsync(page, pageSize);
             if (products != null)
             {
                 var total = products.Count;

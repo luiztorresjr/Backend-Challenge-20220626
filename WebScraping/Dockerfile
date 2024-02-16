@@ -1,29 +1,34 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+# syntax=docker/dockerfile:1
 
-#Depending on the operating system of the host machines(s) that will build or run the containers, the image specified in the FROM statement may need to be changed.
-#For more information, please see https://aka.ms/containercompat
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Dockerfile reference guide at
+# https://docs.docker.com/go/dockerfile-reference/
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["./WebScraping/WebScraping.csproj", "WebScraping/"]
-COPY ["./WebScraping.Infra/WebScraping.Infra.csproj", "WebScraping.Infra/"]
+################################################################################
 
 RUN dotnet restore "./WebScraping/./WebScraping.csproj"
 COPY . .
 WORKDIR "/src/WebScraping"
 RUN dotnet build "./WebScraping.csproj" -c %BUILD_CONFIGURATION% -o /app/build
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./WebScraping.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
+# Create a stage for building the application.
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 
+COPY . /source
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Copy everything needed to run the app from the "build" stage.
+COPY --from=build /app .
+
+# Switch to a non-privileged user (defined in the base image) that the app will run under.
+# See https://docs.docker.com/go/dockerfile-user-best-practices/
+# and https://github.com/dotnet/dotnet-docker/discussions/4764
+USER $APP_UID
+
 ENTRYPOINT ["dotnet", "WebScraping.dll"]
