@@ -1,10 +1,11 @@
-﻿using WebScraping.Model;
+﻿using WebScraping.Infra.Models;
+using WebScraping.Model;
 
 namespace WebScraping.Services
 {
     public interface IProductService
     {
-        Task<List<Product>> GetAllProducts();
+        Task<Result<Product>> GetAllProducts(int page, int pageSize);
         Task<Product> GetProductById(string productId);
         Task<Product?> UpdateProduct(string id, Product produto);
         Task DeleteProduct(string id);

@@ -9,6 +9,6 @@ namespace WebScraping.Infra.Scraping
 {
     public interface IWebScrapingService
     {
-        Task<List<ProductMongo>> GetProductUsingScraping();
+        Task<List<ProductEntity>> GetProductUsingScraping();
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebScraping.Infra.Models
 {
-    public class ProductScraping
+    public class ProductScraping 
     {
         public int? Id { get; set; }
         public long Code { get; set; }

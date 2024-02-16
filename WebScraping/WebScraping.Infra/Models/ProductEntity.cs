@@ -6,18 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ThirdParty.Json.LitJson;
+using WebScraping.Infra.Bases;
 
 namespace WebScraping.Infra.Models
 {
-    public class ProductMongo
+    public class ProductEntity : BaseModel
     {
-        [BsonElement("_id")]
-        [BsonId]
-        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-        public string? Id { get; set; } = null;
-
-        [BsonElement("code")]
-        public long Code { get; set; }
+        
 
         [BsonElement("barcode")]
         public string Barcode { get; set; } = String.Empty;
@@ -42,12 +37,12 @@ namespace WebScraping.Infra.Models
         public string Brands { get; set; } = String.Empty;
         [BsonElement("image_url")]
         public string ImageUrl { get; set; } = String.Empty;
-        public ProductMongo()
+        public ProductEntity()
         {
                 
         }
 
-        public ProductMongo(string? id, long code, string barcode, string status, DateTime imported, string url, string productName, string quantity, string categories, string packaging, string brands, string imageUrl)
+        public ProductEntity(string? id, long code, string barcode, string status, DateTime imported, string url, string productName, string quantity, string categories, string packaging, string brands, string imageUrl)
         {
             Id = id;
             Code = code;
@@ -63,7 +58,7 @@ namespace WebScraping.Infra.Models
             ImageUrl = imageUrl;
         }
 
-        public ProductMongo(ProductScraping product)
+        public ProductEntity(ProductScraping product)
         {
             Code = product.Code;
             Barcode = product.Barcode;

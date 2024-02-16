@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebScraping.Infra.Models;
 using WebScraping.Model;
 using WebScraping.Services;
 
@@ -26,20 +27,11 @@ namespace WebScraping.Controllers
         }
 
         [HttpGet("products")]
-        public async Task<IActionResult> GetProducts(int page = 1, int pageSize = 10)
+        public async Task<ActionResult<Result<Product>>> GetProductsAsync(int page = 1, int pageSize = 10)
         {
-            var products = await _service.GetAllProducts();
-            if (products != null)
-            {
-                var total = products.Count;
-                var totalPage = (int)Math.Ceiling((decimal)total / pageSize);
-                var producsPerPage = products
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
-                return Ok(producsPerPage);
-                
-            }
+            var products = await _service.GetAllProducts(page, pageSize);            
+            if(products != null)
+                return Ok(products);                
             else
                 return NoContent();
         }
@@ -101,7 +93,7 @@ namespace WebScraping.Controllers
         public async Task<IActionResult> AddProduct([FromBody] Product product)
         {
             await _service.AddProduct(product);
-            return CreatedAtAction(nameof(GetProducts), new { id = product.Id }, product);
+            return CreatedAtAction(nameof(GetProductsAsync), new { id = product.Id }, product);
 
         }
 #endif

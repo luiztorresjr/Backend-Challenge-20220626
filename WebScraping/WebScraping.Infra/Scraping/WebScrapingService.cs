@@ -9,19 +9,19 @@ namespace WebScraping.Infra.Scraping
     public class WebScrapingService : IWebScrapingService
     {
         const string baseUrl = "https://world.openfoodfacts.org";
-        private IMongoDBService _mongoDBService;
+        private IProductMongoService _service;
         private readonly ILogger<WebScrapingService> _logger;
 
-        public WebScrapingService(IMongoDBService mongoDBService, ILogger<WebScrapingService> logger)
+        public WebScrapingService(IProductMongoService service, ILogger<WebScrapingService> logger)
         {
-            _mongoDBService = mongoDBService;
+            _service = service;
             _logger = logger;
         }
 
-        public async Task<List<ProductMongo>> GetProductUsingScraping()
+        public async Task<List<ProductEntity>> GetProductUsingScraping()
         {
             
-            List<ProductMongo> products = new List<ProductMongo>();
+            List<ProductEntity> products = new List<ProductEntity>();
             List<String> hrefTags = new List<String>();
             var web = new HtmlWeb();
             HtmlDocument document = web.Load(baseUrl);
@@ -38,32 +38,41 @@ namespace WebScraping.Infra.Scraping
                     HtmlAttribute att = link.Attributes["href"];
                     if (att.Value.Contains("/product/"))
                     {
-                        var product = new ProductMongo(GetProduct((baseUrl + att.Value), att.Value));
+                        var product = new ProductEntity(GetProduct((baseUrl + att.Value), att.Value));
 
-                        if (!await _mongoDBService.GetProductByCodeExistsAsync(product.Code))
+                        if (!await _service.GetByCodeExistsAsync(product.Code))
                         {
                             hrefTags.Add(att.Value);
                             products.Add(product);
+                            
+                        }
+                        if (hrefTags.Count == 100)
+                        {
+                            _logger.LogInformation("Ultimo passado " + product);
                             try
                             {
-                                await _mongoDBService.AddOneProduct(product);
+                                await _service.CreateMany(products);
                             }
                             catch (Exception ex)
                             {
                                 Console.WriteLine(ex.ToString());
                                 _logger.LogError(ex.ToString());
                             }
-                        }
-                        if (hrefTags.Count == 100)
-                        {
-                            _logger.LogInformation("Ultimo passado " + product);
                             return products;
                         }
                     }
 
                 }
             }
-
+            try
+            {
+                await _service.CreateMany(products);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                _logger.LogError(ex.ToString());
+            }
             _logger.LogInformation("Lista finalizada");
             return products;
         }
