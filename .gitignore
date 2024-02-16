@@ -12,3 +12,5 @@
 /WebScraping/WebScraping.Infra/obj
 /WebScraping/bin/Debug
 /WebScraping/obj/Debug
+/WebScraping/aspnetapp.pfx
+/WebScraping/%USERPROFILE%/.aspnet/https
