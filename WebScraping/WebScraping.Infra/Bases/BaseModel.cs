@@ -9,6 +9,7 @@ namespace WebScraping.Infra.Bases
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+        
         [BsonElement("code")]
         public long Code { get; set; }
     }

@@ -1,9 +1,12 @@
 ﻿using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ThirdParty.Json.LitJson;
 using WebScraping.Infra.Bases;
@@ -12,13 +15,13 @@ namespace WebScraping.Infra.Models
 {
     public class ProductEntity : BaseModel
     {
-        
+
 
         [BsonElement("barcode")]
         public string Barcode { get; set; } = String.Empty;
 
         [BsonElement("status")]
-        public string Status { get; set; } = String.Empty;
+        public EStatusEntity Status { get; set; } = EStatusEntity.imported;
 
         [BsonElement("imported_t")]
         public DateTime Imported { get; set; }
@@ -39,15 +42,14 @@ namespace WebScraping.Infra.Models
         public string ImageUrl { get; set; } = String.Empty;
         public ProductEntity()
         {
-                
+
         }
 
-        public ProductEntity(string? id, long code, string barcode, string status, DateTime imported, string url, string productName, string quantity, string categories, string packaging, string brands, string imageUrl)
+        public ProductEntity(long code, string barcode, EStatus status, DateTime imported, string url, string productName, string quantity, string categories, string packaging, string brands, string imageUrl)
         {
-            Id = id;
             Code = code;
             Barcode = barcode;
-            Status = status;
+            Status = ComparaEnum(status);
             Imported = imported;
             Url = url;
             ProductName = productName;
@@ -62,7 +64,7 @@ namespace WebScraping.Infra.Models
         {
             Code = product.Code;
             Barcode = product.Barcode;
-            Status = product.Status.ToString();
+            Status = ComparaEnum(product.Status);
             Imported = product.Imported;
             Url = product.Url;
             ProductName = product.ProductName;
@@ -72,5 +74,23 @@ namespace WebScraping.Infra.Models
             Brands = product.Brands;
             ImageUrl = product.ImageUrl;
         }
+        public EStatusEntity ComparaEnum(EStatus es)
+        {
+            return es switch
+            {
+                EStatus.draft => EStatusEntity.draft,
+                EStatus.imported => EStatusEntity.imported,
+                _ => EStatusEntity.imported,
+            };
+        }
     }
+
+
+    public enum EStatusEntity
+    {
+        [Description("draft")]
+        draft,
+        [Description("imported")]
+        imported
+    }    
 }

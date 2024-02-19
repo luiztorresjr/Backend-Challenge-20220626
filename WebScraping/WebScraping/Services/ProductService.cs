@@ -1,6 +1,7 @@
 ﻿using Amazon.Runtime.Internal;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using MongoDB.Bson;
 using System.Drawing.Printing;
 using WebScraping.Infra.Models;
 using WebScraping.Infra.Services;
@@ -21,10 +22,15 @@ namespace WebScraping.Services
 
         public async Task<Product?> AddProduct(Product produto)
         {
-            var request = _mapper.Map<ProductModel>(produto);
             try {
-                await _service.Create(request);
-                return produto;
+                var request = _mapper.Map<Product>(produto);
+                var result = await _service.Create(request);
+                if(result == null)
+                {
+                    return null;
+                }
+                var response = _mapper.Map<Product>(result);
+                return response;
 
             } catch (Exception ex)
             {
@@ -50,15 +56,13 @@ namespace WebScraping.Services
         public async Task<Product> GetProductById(string id)
         {
             var response = await _service.GetById(id);
-            var responseApi = new Product();
-            if (response != null)
-                responseApi = _mapper.Map<Product>(response);
+            var responseApi = _mapper.Map<Product>(response);
             return responseApi;
         }
 
         public async Task<Product?> UpdateProduct(string id, Product produto)
         {
-            var request = _mapper.Map<ProductModel>(produto);
+            var request = _mapper.Map<Product>(produto);
             try
             {
                 await _service.Update(id, request);

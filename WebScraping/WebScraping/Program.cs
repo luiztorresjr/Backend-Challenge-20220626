@@ -1,11 +1,12 @@
 
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver.Core.Configuration;
 using WebScraping.Helpers;
 using WebScraping.Infra.Cron;
-using WebScraping.Infra.Mappers;
 using WebScraping.Infra.Models;
 using WebScraping.Infra.Repository;
 using WebScraping.Infra.Scraping;
@@ -29,9 +30,10 @@ builder.Services.AddDistributedRedisCache(opt =>
 
 #region [HealthCheck]
 builder.Services.AddHealthChecks()
-              .AddRedis(builder.Configuration.GetSection("Redis:ConnectionString").Value, tags: new string[] { "db", "data" })
+              .AddRedis(builder.Configuration.GetSection("Redis:ConnectionString").Value, "Redis", HealthStatus.Unhealthy)
              .AddMongoDb(builder.Configuration.GetSection("MongoDB:ConnectionURI").Value + "/" + builder.Configuration.GetSection("MongoDB:DatabaseName").Value,
-                    name: "mongo", tags: new string[] { "db", "data" });
+                   "MongoDB", HealthStatus.Unhealthy,
+                   new[] { "db", "mongo", "mongodb" });
 
 
 builder.Services.AddHealthChecksUI(opt =>
@@ -42,6 +44,8 @@ builder.Services.AddHealthChecksUI(opt =>
 
     opt.AddHealthCheckEndpoint("default api", "/health"); //map health check api
 }).AddInMemoryStorage();
+
+
 #endregion
 
 builder.Services.AddControllers();
@@ -51,16 +55,16 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfraestrutura();
 builder.Services.AddCors();
-builder.Services.AddAutoMapper(typeof(WebScraping.Helpers.ProductProfile).Assembly, typeof(WebScraping.Infra.Mappers.ProductEntityMapping).Assembly);
 builder.Services.AddSingleton(typeof(IMongoRepository<>), typeof(MongoRepository<>));
 
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddSingleton<IProductMongoService, ProductMongoService>();
 builder.Services.AddSingleton<IWebScrapingService, WebScrapingService>();
-builder.Services.AddTransient<IScrapingService, ScrapingService>();
+builder.Services.AddSingleton<IScrapingService, ScrapingService>();
 
 builder.Services.AddSingleton<ICacheRedisService, CacheRedisService>();
 
+builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);                  
 
 var app = builder.Build();
 

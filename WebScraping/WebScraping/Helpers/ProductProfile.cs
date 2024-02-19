@@ -8,11 +8,15 @@ namespace WebScraping.Helpers
     {
         public ProductProfile()
         {
-            CreateMap<ProductModel, Product>().ReverseMap();
             CreateMap<ProductScraping, Product>().ReverseMap();
+            CreateMap<ProductEntity, Product>().ReverseMap();
+            CreateMap<ProductScraping, ProductEntity>().ReverseMap();
 
-            CreateMap<Result<ProductModel>, Result<Product>>().ReverseMap();
+            CreateMap<Result<ProductEntity>, Result<Product>>().ReverseMap();
+            CreateMap<Result<ProductScraping>, Result<ProductEntity>>().ReverseMap();
             CreateMap<Result<ProductScraping>, Result<Product>>().ReverseMap();
+
+            CreateMap<EStatus, EStatusEntity>().ReverseMap();
         }
     }
 }

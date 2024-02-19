@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebScraping.Infra.Bases;
 using WebScraping.Infra.Models;
+using MongoDB.Bson;
 
 namespace WebScraping.Infra.Repository
 {

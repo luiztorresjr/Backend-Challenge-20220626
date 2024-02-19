@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using WebScraping.Infra.Bases;
@@ -11,6 +13,8 @@ namespace WebScraping.Infra.Repository
         /// <summary>
         /// Gets the collection
         /// </summary>
+        /// 
+        private ILogger<MongoRepository<T>> _logger; 
         protected IMongoCollection<T> _collection;
         public IMongoCollection<T> Collection
         {
@@ -36,13 +40,25 @@ namespace WebScraping.Infra.Repository
         /// <summary>
         /// Ctor
         /// </summary>        
-        public MongoRepository(IMongoDBSettings dataProvider)
+        public MongoRepository(IMongoDBSettings dataProvider, ILogger<MongoRepository<T>> logger)
         {
+            _logger = logger;
             if (!string.IsNullOrEmpty(dataProvider.ConnectionURI))
             {
                 var client = new MongoClient(dataProvider.ConnectionURI);
                 _database = client.GetDatabase(dataProvider.DatabaseName);
                 _collection = _database.GetCollection<T>(typeof(T).Name);
+
+                try
+                {
+                    var result = client.GetDatabase(dataProvider.DatabaseName).RunCommand<BsonDocument>(new BsonDocument("ping", 1));
+                    _logger.LogInformation("Pinged your deployment. You successfully connected to MongoDB!");
+                }
+                catch (Exception ex) { 
+                    Console.WriteLine(ex);
+                    _logger.LogError(ex.Message);
+                }
+
             }
         }
         public MongoRepository(string connectionString)
@@ -277,7 +293,7 @@ namespace WebScraping.Infra.Repository
             return products == null ? default(T) : products;
         }
 
-        public async Task<T?> GetAsync(string id)
+        public async Task<T> GetAsync(string id)
         {
             var filter = Builders<T>.Filter.Eq(entity => entity.Id, id);
 

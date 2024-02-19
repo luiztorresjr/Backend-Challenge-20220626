@@ -9,8 +9,10 @@ namespace WebScraping.Infra.Models
     public class MongoDBSetttings : IMongoDBSettings
     {
         public string ConnectionURI { get; set; }
-        public string DatabaseName { get; set; } 
+        public string DatabaseName { get; set; }
         public string CollectionName { get; set; }
+
+        
 
     }
 

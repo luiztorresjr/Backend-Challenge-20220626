@@ -8,7 +8,7 @@ namespace WebScraping.Infra.Models
 {
     public class ProductScraping 
     {
-        public int? Id { get; set; }
+        public string? Id { get; set; }
         public long Code { get; set; }
         public string Barcode { get; set; }
         public EStatus Status { get; set; } = EStatus.imported;

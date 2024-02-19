@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using IdentityModel.OidcClient;
+using WebScraping.Infra.Models;
 using WebScraping.Infra.Scraping;
 using WebScraping.Model;
 
@@ -15,15 +17,15 @@ namespace WebScraping.Services
             _service = service;
         }
 
-        public async Task<List<Product>> GetProductsAsync()
+        public async Task<Result<Product>> GetProductsAsync(int page, int pageSize)
         {
             try
             {
                 var result = await _service.GetProductUsingScraping();
-                var response = new List<Product>();
+                var response = new Result<Product>();
                 if (result != null)
                 {
-                    response = _mapper.Map<List<Product>>(result);
+                    response = _mapper.Map<Result<Product>>(result);
                 }
 
                 return response;
@@ -31,7 +33,7 @@ namespace WebScraping.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                return [];
+                return default;
             }
         }
     }

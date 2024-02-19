@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using WebScraping.Infra.Models;
 using WebScraping.Infra.Services;
+using WebScraping.Model;
 
 
 namespace WebScraping.Infra.Scraping
@@ -18,7 +19,7 @@ namespace WebScraping.Infra.Scraping
             _logger = logger;
         }
 
-        public async Task<List<ProductEntity>> GetProductUsingScraping()
+        public async Task<Result<Product>> GetProductUsingScraping(int page= 1, int pageSize = 100)
         {
             
             List<ProductEntity> products = new List<ProductEntity>();
@@ -58,7 +59,7 @@ namespace WebScraping.Infra.Scraping
                                 Console.WriteLine(ex.ToString());
                                 _logger.LogError(ex.ToString());
                             }
-                            return products;
+                            return _service.Get(page, pageSize);
                         }
                     }
 
@@ -67,6 +68,7 @@ namespace WebScraping.Infra.Scraping
             try
             {
                 await _service.CreateMany(products);
+                return _service.Get(page, pageSize);
             }
             catch (Exception ex)
             {
@@ -74,7 +76,7 @@ namespace WebScraping.Infra.Scraping
                 _logger.LogError(ex.ToString());
             }
             _logger.LogInformation("Lista finalizada");
-            return products;
+            return _service.Get(page, pageSize);
         }
         public ProductScraping GetProduct(String url, string codigo)
         {

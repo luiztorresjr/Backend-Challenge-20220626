@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using WebScraping.Infra.Models;
 using WebScraping.Model;
 using WebScraping.Services;
@@ -71,20 +72,11 @@ namespace WebScraping.Controllers
         }
 
         [HttpGet("GetByWebScraping")]
-        public async Task<IActionResult> GetProductsByScraping(int page = 1, int pageSize = 10)
+        public async Task<ActionResult<Result<Product>>> GetProductsByScraping(int page = 1, int pageSize = 10)
         {
             var products = await _scrapingService.GetProductsAsync(page, pageSize);
             if (products != null)
-            {
-                var total = products.Count;
-                var totalPage = (int)Math.Ceiling((decimal)total / pageSize);
-                var producsPerPage = products
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
-                return Ok(producsPerPage);
-
-            }
+                return Ok(products);
             else
                 return NoContent();
         }
@@ -92,8 +84,20 @@ namespace WebScraping.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProduct([FromBody] Product product)
         {
-            await _service.AddProduct(product);
-            return CreatedAtAction(nameof(GetProductsAsync), new { id = product.Id }, product);
+            try
+            {
+                var products = await _service.AddProduct(product);
+                if (products.Id != null)
+                    return Created();
+                else
+                    return NoContent();
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+                throw;
+            }
 
         }
 #endif
