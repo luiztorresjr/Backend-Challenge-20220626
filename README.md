@@ -11,6 +11,7 @@ que tem como objeto ler informações de produtos, além de obter informações 
 - Swagger
 - MongoDB
 - Docker
+- Redis
 
 # Responses 
 
