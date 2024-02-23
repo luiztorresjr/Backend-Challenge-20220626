@@ -1,4 +1,4 @@
-# Backend-Challenge-20220626
+# WebScraping (Challenge - coodesh)
 
 Este é um desafio para back-end, para testar conhecimentos na criação de API utilizando .NET/C# 
 que tem como objeto ler informações de produtos, além de obter informações do site
